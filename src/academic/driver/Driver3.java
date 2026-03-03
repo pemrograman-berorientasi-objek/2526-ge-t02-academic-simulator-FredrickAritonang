@@ -20,9 +20,19 @@ public class Driver3 {
                 break; // Stop reading input
             }
 
-            // Parse the input line
-            String[] parts = line.split("#");
-            // Input format: courseCode#studentId#academicYear#semester (4 parts)
+            // --- PERUBAHAN DIMULAI DI SINI ---
+            String[] parts;
+            String originalLineData = line;
+
+            // Check if the line starts with "enrollment-add#" (for compatibility with Driver4-style test input)
+            if (line.startsWith("enrollment-add#")) {
+                // If it does, remove the prefix to get the actual data for Enrollment
+                originalLineData = line.substring("enrollment-add#".length());
+            }
+            
+            // Now parse the (potentially modified) line data
+            parts = originalLineData.split("#");
+            // Input format expected by Enrollment constructor: courseCode#studentId#academicYear#semester (4 parts)
             if (parts.length == 4) {
                 String courseCode = parts[0];
                 String studentId = parts[1];
@@ -33,8 +43,11 @@ public class Driver3 {
                 enrollments.add(enrollment);
             } else {
                 // Optionally handle malformed input lines
-                System.err.println("Input format error: " + line);
+                // Note: This error will now only trigger if the data *after* "enrollment-add#" is malformed,
+                // or if a line without "enrollment-add#" has incorrect parts.
+                System.err.println("Input format error for data: " + originalLineData);
             }
+            // --- PERUBAHAN BERAKHIR DI SINI ---
         }
 
         input.close(); // Close the scanner to prevent resource leak
